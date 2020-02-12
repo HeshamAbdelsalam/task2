@@ -1,0 +1,81 @@
+﻿
+<div class="row">
+    <div class="col-md-4">
+
+        <fieldset>
+            <legend>user Login form</legend>
+            <label>
+                username:
+            </label><br />
+            <input type="text" name="username" id="username" class="form-control" />
+            <br />
+            <label>
+                password:
+            </label><br />
+            <input type="password" name="password" id="password" class="form-control" />
+            <br />
+            <button id="btnLogin" class="btn btn-primary">Login</button>
+        </fieldset>
+            <ul id="usersData"  />
+       
+
+
+    </div>
+    <div class="col-md-4">
+      </div> 
+    <div class="col-md-4">
+       </div>
+</div>
+
+@section scripts
+{
+    
+<script>
+
+    $(document).ready(function () {
+       
+        var usersData = $('#usersData');
+        $('#btnLogin').click(function () {
+
+            var username = $('#username').val();
+            var password = $('#password').val();
+            $.ajax({
+                type: "GET",
+                url: "http://localhost:55480/api/Values",
+                dataType: "jsonp",
+                beforeSend: function (xhr, settings) { xhr.setRequestHeader('Authorization', 'Bearer ' + btoa(username + ':' + password)) },
+               
+                success: function (data) {
+                  //can use webapi to bring data here
+                }
+                ,
+                complete: function (jqxhr) {
+
+                    if (jqxhr.status == '401') {
+                        usersData.empty();
+                        usersData.append('<li><h1>' + jqxhr.status + ' :' + jqxhr.statusText + '</h1></Li>');
+                    }
+                    else if (jqxhr.status=='200') {
+                     //   window.location.href = "http://localhost:55480/Emp/Index";
+                        usersData.empty();
+                        usersData.append('<li><h1>this is Employee Login authentication</h1></Li>');
+                    }
+                    else if (jqxhr.status=='301') {
+                        usersData.empty();
+                        usersData.append('<li><h1>this is admin Login authentication</h1></Li>');
+                    }
+
+                }
+
+            }
+            );
+            
+        });
+
+
+
+
+    });
+    </script>    
+    
+}
